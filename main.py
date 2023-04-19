@@ -1,5 +1,6 @@
 import pygame
-import os
+from threading import Thread
+import time
 import random
 
 pygame.init()
@@ -22,6 +23,22 @@ point = 0
 window = pygame.display.set_mode((WIDTH,HEIGHT))
 
 clock = pygame.time.Clock()
+
+def countDown():
+    global myTimer
+
+    myTimer = 5
+    for x in range(5):
+        myTimer-=1
+        time.sleep(1)
+    print("time out")
+
+
+
+def stop():
+    global point
+    point -=1
+    main()
 
 def chooseRandomImage(Correct,Preference):
 
@@ -52,10 +69,14 @@ def chooseRandomImage(Correct,Preference):
 def drawWindow(imageRect, AJITH_IMAGE, point):
 
     window.blit(AJITH_IMAGE, (imageRect.x, imageRect.y))
-
+    global startTime
+    startTime = time.time()
     pointText = POINT_FONT.render(str(point), 1, WHITE)
     window.blit(pointText,(0,0))
     pygame.display.update()
+
+# countDownThread = Thread(target=countDown)
+# countDownThread.start()
 
 def main():
     window.fill((0,0,0))
@@ -74,6 +95,14 @@ def main():
 
     running = True
     while running:
+        global startTime
+        elapsedTime = time.time() - startTime
+        if elapsedTime > 5:
+            point = 0
+            print("Time's Up")
+            main()
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -84,12 +113,14 @@ def main():
                         point+=2
                     else:
                         point-=1
+                    # myTimer = 0
                     main()
                 if event.key == pygame.K_LCTRL: #others
                     if Correct:
                         point-=5
                     else:
                         point+=1
+                    # myTimer = 0
                     main()
 
         drawWindow(imageRect, IMAGE, point)      
