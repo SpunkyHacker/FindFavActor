@@ -7,6 +7,7 @@ pygame.init()
 pygame.font.init()
 
 POINT_FONT = pygame.font.SysFont('comicsans', 40)
+TIMEUP_FONT = pygame.font.SysFont('comisans', 60)
 
 WHITE = (255, 255, 255)
 
@@ -17,6 +18,8 @@ WIDTH = 500
 
 IMAGE_HEIGHT = 400
 IMAGE_WIDTH = 400
+
+TIME_FOR_ONE_ROUND = 3
 
 point = 0
 
@@ -65,26 +68,60 @@ def chooseRandomImage(Correct,Preference):
     
     return addrs,Correct
 
+def timesUp():
+    window.fill((0, 0, 0)) 
+    timeuptext = TIMEUP_FONT.render("Times up", 1, WHITE)
+    timesup = TIMEUP_FONT.render("Try Again", 1, WHITE)
+    window.blit(timeuptext,(0,100))
+    window.blit(timesup, (0, 150))
+    pygame.display.update()
+    time.sleep(2)
+    main()
 
-def drawWindow(imageRect, AJITH_IMAGE, point):
 
+def urNotFan(Preference):
+    window.fill((0, 0, 0))
+    urnotfantext = TIMEUP_FONT.render("You are not fan of " +str(Preference), 1, WHITE)
+    timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-startTime))+" secs", 1, WHITE)
+    window.blit(urnotfantext,(0, 100))
+    window.blit(timetext,(0, 150))
+    pygame.display.update()
+    time.sleep(2)
+    pygame.quit()
+
+def notLoyalToActor(Preference):
+    window.fill((0, 0, 0))
+    urnotfantext = TIMEUP_FONT.render("You are not loyal to " +str(Preference), 1, WHITE)
+    timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-startTime))+" secs", 1, WHITE)
+    window.blit(urnotfantext,(0, 100))
+    window.blit(timetext,(0, 150))
+    pygame.display.update()
+    time.sleep(2)
+    pygame.quit()
+
+def drawWindow(imageRect, AJITH_IMAGE, point, elapsedTime):
+    window.fill((0,0,0))
     window.blit(AJITH_IMAGE, (imageRect.x, imageRect.y))
-    global startTime
-    startTime = time.time()
     pointText = POINT_FONT.render(str(point), 1, WHITE)
     window.blit(pointText,(0,0))
+    timeText = POINT_FONT.render(str(round(elapsedTime)), 1, WHITE)
+    window.blit(timeText,(450,0))
     pygame.display.update()
 
-# countDownThread = Thread(target=countDown)
-# countDownThread.start()
 
+startTime = time.time()
+survivedTime = time.time()
 def main():
+    global startTime
+    startTime = time.time()
+
     window.fill((0,0,0))
     global point
 
     Correct = False
     Preference = "Vijay"
 
+    urnotfan = False
 
     addrs, Correct = chooseRandomImage(Correct,Preference)
     IMAGE = pygame.transform.scale(pygame.image.load(addrs), (IMAGE_WIDTH,IMAGE_HEIGHT))
@@ -95,35 +132,36 @@ def main():
 
     running = True
     while running:
-        global startTime
+
         elapsedTime = time.time() - startTime
-        if elapsedTime > 5:
+        if elapsedTime > TIME_FOR_ONE_ROUND:
             point = 0
             print("Time's Up")
-            main()
+            timesUp()
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 pygame.quit()
+            if point < 0 :
+                timesUp()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: #correct
-                    if Correct:
-                        point+=2
-                    else:
-                        point-=1
-                    # myTimer = 0
-                    main()
-                if event.key == pygame.K_LCTRL: #others
-                    if Correct:
-                        point-=5
-                    else:
-                        point+=1
-                    # myTimer = 0
+                if event.key == pygame.K_LCTRL:
+                    if Correct: # showed preferred photo
+                        urNotFan(Preference)
+                    else: # showed unpreferred photo
+                        main()
+                elif event.key == pygame.K_SPACE:
+                    if Correct: # shown preferred photo
+                        point+=1                       
+                    else: # showed unpreferred photo
+                        notLoyalToActor(Preference)
                     main()
 
-        drawWindow(imageRect, IMAGE, point)      
+        drawWindow(imageRect, IMAGE, point, elapsedTime)    
+
+
     print("done")
 
 
