@@ -1,5 +1,4 @@
 import pygame
-from threading import Thread
 import time
 import random
 
@@ -19,23 +18,16 @@ WIDTH = 500
 IMAGE_HEIGHT = 400
 IMAGE_WIDTH = 400
 
-TIME_FOR_ONE_ROUND = 3
+TIME_FOR_ONE_ROUND = 2
 
 point = 0
 
 window = pygame.display.set_mode((WIDTH,HEIGHT))
 
+
 clock = pygame.time.Clock()
 
-def countDown():
-    global myTimer
-
-    myTimer = 5
-    for x in range(5):
-        myTimer-=1
-        time.sleep(1)
-    print("time out")
-
+timestart = time.time()
 
 
 def stop():
@@ -82,7 +74,7 @@ def timesUp():
 def urNotFan(Preference):
     window.fill((0, 0, 0))
     urnotfantext = TIMEUP_FONT.render("You are not fan of " +str(Preference), 1, WHITE)
-    timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-startTime))+" secs", 1, WHITE)
+    timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-timestart))+" secs", 1, WHITE)
     window.blit(urnotfantext,(0, 100))
     window.blit(timetext,(0, 150))
     pygame.display.update()
@@ -92,7 +84,7 @@ def urNotFan(Preference):
 def notLoyalToActor(Preference):
     window.fill((0, 0, 0))
     urnotfantext = TIMEUP_FONT.render("You are not loyal to " +str(Preference), 1, WHITE)
-    timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-startTime))+" secs", 1, WHITE)
+    timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-timestart))+" secs", 1, WHITE)
     window.blit(urnotfantext,(0, 100))
     window.blit(timetext,(0, 150))
     pygame.display.update()
@@ -121,7 +113,7 @@ def main():
     Correct = False
     Preference = "Vijay"
 
-    urnotfan = False
+
 
     addrs, Correct = chooseRandomImage(Correct,Preference)
     IMAGE = pygame.transform.scale(pygame.image.load(addrs), (IMAGE_WIDTH,IMAGE_HEIGHT))
