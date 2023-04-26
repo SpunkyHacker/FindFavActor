@@ -71,7 +71,7 @@ def timesUp():
     main()
 
 
-def urNotFan(Preference):
+def clickedCtrlWhenShowingFavourateActor(Preference):
     window.fill((0, 0, 0))
     urnotfantext = TIMEUP_FONT.render("You are not fan of " +str(Preference), 1, WHITE)
     timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-timestart))+" secs", 1, WHITE)
@@ -81,9 +81,9 @@ def urNotFan(Preference):
     time.sleep(2)
     pygame.quit()
 
-def notLoyalToActor(Preference):
+def clickedSpaceWhenNotShowingFavourateActor(Preference):
     window.fill((0, 0, 0))
-    urnotfantext = TIMEUP_FONT.render("You are not loyal to " +str(Preference), 1, WHITE)
+    urnotfantext = TIMEUP_FONT.render("This may not be your favourate Actor" +str(Preference), 1, WHITE)
     timetext = TIMEUP_FONT.render("You have survived "+str(round(time.time()-timestart))+" secs", 1, WHITE)
     window.blit(urnotfantext,(0, 100))
     window.blit(timetext,(0, 150))
@@ -111,7 +111,7 @@ def main():
     global point
 
     Correct = False
-    Preference = "Vijay"
+    Preference = "Rajinikanth"
 
 
 
@@ -141,14 +141,14 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL:
                     if Correct: # showed preferred photo
-                        urNotFan(Preference)
+                        clickedCtrlWhenShowingFavourateActor(Preference)
                     else: # showed unpreferred photo
                         main()
                 elif event.key == pygame.K_SPACE:
                     if Correct: # shown preferred photo
                         point+=1                       
                     else: # showed unpreferred photo
-                        notLoyalToActor(Preference)
+                        clickedSpaceWhenNotShowingFavourateActor(Preference)
                     main()
 
         drawWindow(imageRect, IMAGE, point, elapsedTime)    
